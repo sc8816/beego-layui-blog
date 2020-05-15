@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>闲言轻博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/css/mian.css">
+</head>
+<body class="lay-blog">
+{{template "common/header.html" .}}
+<div class="container-wrap">
+    <div class="container">
+        <div class="contar-wrap">
+            <div class="item">
+                {{if .isLogin}}
+                    <h4 class="item-title">
+                        <p><i class="layui-icon layui-icon-speaker"></i>公告：<span>欢迎{{.User.Name}}</span>
+                        ，您是否需要<a href="/logout">登出</a>
+                        </p>
+                    </h4>
+                {{else}}
+                    <div class="item-box  layer-photos-demo1 layer-photos-demo">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="email" required lay-verify="required" placeholder="请输入邮箱"
+                                           autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" name="password" required lay-verify="required"
+                                           placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="login">登陆</button>
+                                    <button type="reset" onclick="location.href='/reg'" class="layui-btn layui-btn-primary">注册</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</div>
+{{template "common/footer.html" .}}
+<script src="/static/layui/layui.js"></script>
+<script>
+    //Demo
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form, $ = layui.jquery
+        //监听提交
+        form.on('submit(login)', function (data) {
+            $.post("/login", data.field, function (resp) {
+                if (resp.code === 0) {
+                    layer.msg("登陆成功")
+                    if (resp.action) {
+                        setTimeout(function () {
+                            location.href = resp.action
+                        }, 300)
+                    }
+                } else {
+                    layer.msg("登陆失败")
+                }
+            }, 'json').error(function () {
+                layer.msg("系统错误")
+            })
+            return false
+        });
+    });
+</script>
+</body>
+</html>
